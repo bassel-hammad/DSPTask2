@@ -1,8 +1,13 @@
 import sys
+import os
+import csv
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog
+from PyQt5.QtWidgets import QWidget
 
-
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 class MyApp(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -10,6 +15,51 @@ class MyApp(QMainWindow):
         # Create the main window and UI
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+
+        # Connect the "Open" action to the open_csv_file function
+        self.ui.actionOpen.triggered.connect(self.open_csv_file)
+
+        # Create a widget to display the matplotlib plot
+        self.plot_widget = QWidget(self.ui.viewerTab)
+        self.ui.signalLayout.addWidget(self.plot_widget)
+        self.plot_widget.setLayout(QtWidgets.QVBoxLayout())
+
+        self.canvas = FigureCanvas(plt.figure())
+        self.plot_widget.layout().addWidget(self.canvas)
+
+
+    def open_csv_file(self):
+        options = QFileDialog.Options()
+        options |= QFileDialog.ReadOnly
+
+        # Get the path to the selected CSV file
+        file_path, _ = QFileDialog.getOpenFileName(self, "Open CSV File", "", "CSV Files (*.csv);;All Files (*)",
+                                                   options=options)
+
+        if file_path:
+            # Read the CSV file and extract the data
+            with open(file_path, 'r') as csv_file:
+                csv_reader = csv.reader(csv_file)
+                data = [row for row in csv_reader]
+
+            if data:
+                # Assuming your CSV file has two columns: time and magnitude
+                time = [float(row[0]) for row in data]
+                magnitude = [float(row[1]) for row in data]
+
+                # Clear the previous plot
+                self.canvas.figure.clear()
+
+                # Create a new plot and display it
+                ax = self.canvas.figure.add_subplot(111)
+                ax.plot(time, magnitude)
+                ax.set_xlabel("Time")
+                ax.set_ylabel("Magnitude")
+                ax.set_title("CSV Data Plot")
+                ax.grid(True)
+
+                # Redraw the canvas
+                self.canvas.draw()
 
 
 class Ui_MainWindow(object):
@@ -113,6 +163,8 @@ class Ui_MainWindow(object):
         self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
+
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
@@ -130,6 +182,7 @@ class Ui_MainWindow(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.composeTab), _translate("MainWindow", "Composer"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.actionOpen.setText(_translate("MainWindow", "Open"))
+
 
 
 
