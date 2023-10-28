@@ -1,6 +1,7 @@
 import sys
 import os
 import csv
+from classes import*
 import pandas as pd
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog
@@ -9,6 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from signals import signal
+
 class MyApp(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -24,6 +26,8 @@ class MyApp(QMainWindow):
         self.plot_widget = QWidget(self.ui.viewerTab)
         self.ui.signalLayout.addWidget(self.plot_widget)
         self.plot_widget.setLayout(QtWidgets.QVBoxLayout())
+
+
         
 
 class Ui_MainWindow(object):
@@ -132,12 +136,32 @@ class Ui_MainWindow(object):
         self.canvas_1 = FigureCanvas(plt.figure())
         self.canvas_2 = FigureCanvas(plt.figure())
         self.canvas_3 = FigureCanvas(plt.figure())
+        #create canvas_sin for sinwaves
+        self.canvas_sin = FigureCanvas(plt.figure())
+
         self.signalLayout.layout().addWidget(self.canvas_1)
         self.signalLayout.layout().addWidget(self.canvas_2)
         self.signalLayout.layout().addWidget(self.canvas_3)
+        #add canvas_sin in the composeLayout
+        self.composeLayout.layout().addWidget(self.canvas_sin)
 
         # Connect the "Open" action to the open_csv_file function
         self.actionOpen.triggered.connect(self.open_csv_file)
+
+        # connect Addsinbutton to plot_sinwaves function
+        self.addSinButton.clicked.connect(self.plot_sinwaves)
+
+        # Connect the slider to the change_frequency function
+        self.FcomposeSlider.valueChanged.connect(self.change_frequency)
+        # Connect the amplitudeSlider to the change_amplitude function
+        self.amplitudeSlider.valueChanged.connect(self.change_amplitude)
+
+        # Initialize default values for frequency and amplitude
+        self.frequency = 1.0
+        self.amplitude = 1.0
+
+        # Create an initial sine wave plot
+        self.update_sine_wave_plot()
 
     def open_csv_file(self):
         file_dialog = QFileDialog()
@@ -182,6 +206,53 @@ class Ui_MainWindow(object):
             self.canvas_1.draw()
             self.canvas_2.draw()
             self.canvas_3.draw()
+
+    def plot_sinwaves(self):
+        # Clear the previous plot
+
+        # Generate a sinusoidal wave with magnitude = 1 and frequency = 1
+        x = np.linspace(0, 2 * np.pi, 1000)
+        y = np.sin(x)
+
+        # Create a new plot and display it
+        ax = self.canvas_sin.figure.add_subplot(111)
+        ax.plot(x, y, linewidth=3)
+        ax.set_xlabel("Time")
+        ax.set_ylabel("Magnitude")
+        ax.set_title("Sinusoidal Wave")
+        ax.grid(True)
+        self.canvas_sin.draw()
+
+    def change_frequency(self, value):
+        # Get the slider value and use it to update the frequency
+        self.frequency = value / 10.0  # You may need to adjust this scaling factor
+        # Update the sine wave plot
+        self.update_sine_wave_plot()
+
+    def change_amplitude(self, value):
+        # Get the slider value and use it to update the amplitude
+        self.amplitude = value / 10.0  # You may need to adjust this scaling factor
+        # Update the sine wave plot
+        self.update_sine_wave_plot()
+
+    def update_sine_wave_plot(self):
+        # Recreate and update the sine wave plot with the current frequency and amplitude
+        self.canvas_sin.figure.clear()
+        ax = self.canvas_sin.figure.add_subplot(111)
+
+        # Generate a sine wave with the current frequency and amplitude
+        time = np.linspace(0, 2 * np.pi, 1000)
+        sine_wave = self.amplitude * np.sin(2 * np.pi * self.frequency * time)
+
+        ax.plot(time, sine_wave)
+        ax.set_xlabel("Time")
+        ax.set_ylabel("Amplitude")
+        ax.set_title(f"Sine Wave (Frequency: {self.frequency} Hz, Amplitude: {self.amplitude})")
+        ax.grid(True)
+
+        # Redraw the canvas
+        self.canvas_sin.draw()
+
 
 
 
