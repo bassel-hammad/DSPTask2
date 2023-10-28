@@ -11,14 +11,15 @@ class signal():
         self.fsampling = 1
         self.Max_frequency= 0
         self.reconstructed=[]
+        self.difference_original_reconstructed=[]
     def upload_signal_data(self,x_data,y_data,max_freq=0):
-        self.MAX_SAMPLES = 3000
+        self.MAX_SAMPLES =1000
         self.fsampling = 1
         self.Max_frequency= 0
         if(len(x_data)<self.MAX_SAMPLES ):
             self.MAX_SAMPLES = len(x_data)
-        self.x_data=x_data[0:self.MAX_SAMPLES]
-        self.y_data=y_data[0:self.MAX_SAMPLES]
+        self.x_data=np.array(x_data[0:self.MAX_SAMPLES])
+        self.y_data=np.array(y_data[0:self.MAX_SAMPLES])
         if(max_freq==0):
             self.get_max_frequency()
         else:
@@ -71,3 +72,7 @@ class signal():
          self.reconstructed = np.zeros_like(self.x_data)
          for i, ti in enumerate(self.x_data):
             self.reconstructed[i] = np.sum(self.samples_amplitude * np.sinc(2*self.Max_frequency* (ti - self.samples_time )))
+
+    def calc_difference(self):
+        self.difference_original_reconstructed= self.y_data - self.reconstructed
+         
