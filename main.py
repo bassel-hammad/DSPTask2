@@ -4,10 +4,10 @@ import csv
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog
 from PyQt5.QtWidgets import QWidget
-
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from signals import signal
 class MyApp(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -26,8 +26,9 @@ class MyApp(QMainWindow):
 
         self.canvas = FigureCanvas(plt.figure())
         self.plot_widget.layout().addWidget(self.canvas)
-
-
+        self.my_siganl=signal()
+        self.my_siganl.upload_signal_data([1,2],[2,3])
+        
     def open_csv_file(self):
         options = QFileDialog.Options()
         options |= QFileDialog.ReadOnly
@@ -46,17 +47,22 @@ class MyApp(QMainWindow):
                 # Assuming your CSV file has two columns: time and magnitude
                 time = [float(row[0]) for row in data]
                 magnitude = [float(row[1]) for row in data]
-
+                #self.MySignal(time,magnitude)
+                self.my_siganl.upload_signal_data(time,magnitude)
                 # Clear the previous plot
                 self.canvas.figure.clear()
-
                 # Create a new plot and display it
-                ax = self.canvas.figure.add_subplot(111)
-                ax.plot(time, magnitude)
+                self.my_siganl.sample_signal()
+                ax = self.canvas.figure.add_subplot(3,1,1)
+                ax.plot(self.my_siganl.x_data, self.my_siganl.y_data,linewidth=3)
                 ax.set_xlabel("Time")
                 ax.set_ylabel("Magnitude")
                 ax.set_title("CSV Data Plot")
                 ax.grid(True)
+                ax.plot(self.my_siganl.samples_time, self.my_siganl.samples_amplitude, 'ro',  markersize=3,label='Sampled Signal')
+                self.my_siganl.reconstruct_from_samples()
+                ax = self.canvas.figure.add_subplot(3,1,2)
+                ax.plot(self.my_siganl.x_data, self.my_siganl.reconstructed,linewidth=3)
 
                 # Redraw the canvas
                 self.canvas.draw()
