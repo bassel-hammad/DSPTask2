@@ -134,7 +134,7 @@ class Ui_MainWindow(object):
         self.canvas_3 = FigureCanvas(plt.figure())
         self.signalLayout.layout().addWidget(self.canvas_1)
         self.signalLayout.layout().addWidget(self.canvas_2)
-        #self.signalLayout.layout().addWidget(self.canvas_3)
+        self.signalLayout.layout().addWidget(self.canvas_3)
 
         # Connect the "Open" action to the open_csv_file function
         self.actionOpen.triggered.connect(self.open_csv_file)
@@ -181,7 +181,7 @@ class Ui_MainWindow(object):
             # Redraw the canvas
             self.canvas_1.draw()
             self.canvas_2.draw()
-            #self.canvas_3.draw()
+            self.canvas_3.draw()
 
 
 
