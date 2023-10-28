@@ -1,13 +1,14 @@
 import sys
 import os
 import csv
+import pandas as pd
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog
 from PyQt5.QtWidgets import QWidget
-
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from signals import signal
 class MyApp(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -17,53 +18,17 @@ class MyApp(QMainWindow):
         self.ui.setupUi(self)
 
         # Connect the "Open" action to the open_csv_file function
-        self.ui.actionOpen.triggered.connect(self.open_csv_file)
+        #self.ui.actionOpen.triggered.connect(self.open_csv_file)
 
         # Create a widget to display the matplotlib plot
         self.plot_widget = QWidget(self.ui.viewerTab)
         self.ui.signalLayout.addWidget(self.plot_widget)
         self.plot_widget.setLayout(QtWidgets.QVBoxLayout())
-
-        self.canvas = FigureCanvas(plt.figure())
-        self.plot_widget.layout().addWidget(self.canvas)
-
-
-    def open_csv_file(self):
-        options = QFileDialog.Options()
-        options |= QFileDialog.ReadOnly
-
-        # Get the path to the selected CSV file
-        file_path, _ = QFileDialog.getOpenFileName(self, "Open CSV File", "", "CSV Files (*.csv);;All Files (*)",
-                                                   options=options)
-
-        if file_path:
-            # Read the CSV file and extract the data
-            with open(file_path, 'r') as csv_file:
-                csv_reader = csv.reader(csv_file)
-                data = [row for row in csv_reader]
-
-            if data:
-                # Assuming your CSV file has two columns: time and magnitude
-                time = [float(row[0]) for row in data]
-                magnitude = [float(row[1]) for row in data]
-
-                # Clear the previous plot
-                self.canvas.figure.clear()
-
-                # Create a new plot and display it
-                ax = self.canvas.figure.add_subplot(111)
-                ax.plot(time, magnitude)
-                ax.set_xlabel("Time")
-                ax.set_ylabel("Magnitude")
-                ax.set_title("CSV Data Plot")
-                ax.grid(True)
-
-                # Redraw the canvas
-                self.canvas.draw()
-
+        
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
+        self.MainWindow=MainWindow
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(806, 624)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -162,6 +127,61 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.my_siganl=signal()
+        self.my_siganl.upload_signal_data([1,2],[2,3])
+        self.canvas_1 = FigureCanvas(plt.figure())
+        self.canvas_2 = FigureCanvas(plt.figure())
+        self.canvas_3 = FigureCanvas(plt.figure())
+        self.signalLayout.layout().addWidget(self.canvas_1)
+        self.signalLayout.layout().addWidget(self.canvas_2)
+        self.signalLayout.layout().addWidget(self.canvas_3)
+
+        # Connect the "Open" action to the open_csv_file function
+        self.actionOpen.triggered.connect(self.open_csv_file)
+
+    def open_csv_file(self):
+        file_dialog = QFileDialog()
+        file_path, _ = file_dialog.getOpenFileName(self.MainWindow, 'Open CSV File', '', 'CSV Files (*.csv)')
+        if file_path:
+            df = pd.read_csv(file_path)
+
+            # Assuming your CSV file has two columns: time and magnitude
+            time = df.iloc[:,0]
+            magnitude = df.iloc[:,1]
+            #self.MySignal(time,magnitude)
+            self.my_siganl.upload_signal_data(time,magnitude)
+            # Clear the previous plot
+            self.canvas_1.figure.clear()
+            self.canvas_2.figure.clear()
+            # Create a new plot and display it
+            self.my_siganl.sample_signal()
+            ax = self.canvas_1.figure.add_subplot(1,1,1)
+            ax.plot(self.my_siganl.x_data, self.my_siganl.y_data,linewidth=3)
+            ax.set_xlabel("Time")
+            ax.set_ylabel("Magnitude")
+            ax.set_title("Original Signal")
+            ax.grid(True)
+            ax.plot(self.my_siganl.samples_time, self.my_siganl.samples_amplitude, 'ro',  markersize=3,label='Sampled Signal')
+            self.my_siganl.reconstruct_from_samples()
+            ax_reconstructed = self.canvas_2.figure.add_subplot(1,1,1)
+            ax_reconstructed.set_xlabel("Time")
+            ax_reconstructed.set_ylabel("Magnitude")
+            ax_reconstructed.set_title("Reconstructed Signal")
+            ax_reconstructed.grid(True)
+            ax_reconstructed.plot(self.my_siganl.x_data, self.my_siganl.reconstructed,linewidth=3)
+            self.my_siganl.calc_difference()
+            ax_difference = self.canvas_3.figure.add_subplot(1,1,1)
+            ax_difference.set_xlabel("Time")
+            ax_difference.set_ylabel("Magnitude")
+            ax_difference.set_title("ax_difference Signal")
+            ax_difference.grid(True)
+            ax_difference.plot(self.my_siganl.x_data, self.my_siganl.difference_original_reconstructed,linewidth=3)
+
+
+            # Redraw the canvas
+            self.canvas_1.draw()
+            self.canvas_2.draw()
+            self.canvas_3.draw()
 
 
 
