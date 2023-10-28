@@ -27,6 +27,8 @@ class MyApp(QMainWindow):
         self.ui.signalLayout.addWidget(self.plot_widget)
         self.plot_widget.setLayout(QtWidgets.QVBoxLayout())
 
+        self.sinwaves_list = []  # List to store sinwaves objects
+
 
         
 
@@ -149,7 +151,7 @@ class Ui_MainWindow(object):
         self.actionOpen.triggered.connect(self.open_csv_file)
 
         # connect Addsinbutton to plot_sinwaves function
-        self.addSinButton.clicked.connect(self.plot_sinwaves)
+        self.addSinButton.clicked.connect(self.update_sine_wave_plot)
 
         # Connect the slider to the change_frequency function
         self.FcomposeSlider.valueChanged.connect(self.change_frequency)
@@ -160,8 +162,7 @@ class Ui_MainWindow(object):
         self.frequency = 1.0
         self.amplitude = 1.0
 
-        # Create an initial sine wave plot
-        self.update_sine_wave_plot()
+
 
     def open_csv_file(self):
         file_dialog = QFileDialog()
@@ -207,21 +208,7 @@ class Ui_MainWindow(object):
             self.canvas_2.draw()
             self.canvas_3.draw()
 
-    def plot_sinwaves(self):
-        # Clear the previous plot
 
-        # Generate a sinusoidal wave with magnitude = 1 and frequency = 1
-        x = np.linspace(0, 2 * np.pi, 1000)
-        y = np.sin(x)
-
-        # Create a new plot and display it
-        ax = self.canvas_sin.figure.add_subplot(111)
-        ax.plot(x, y, linewidth=3)
-        ax.set_xlabel("Time")
-        ax.set_ylabel("Magnitude")
-        ax.set_title("Sinusoidal Wave")
-        ax.grid(True)
-        self.canvas_sin.draw()
 
     def change_frequency(self, value):
         # Get the slider value and use it to update the frequency
@@ -236,6 +223,9 @@ class Ui_MainWindow(object):
         self.update_sine_wave_plot()
 
     def update_sine_wave_plot(self):
+
+
+
         # Recreate and update the sine wave plot with the current frequency and amplitude
         self.canvas_sin.figure.clear()
         ax = self.canvas_sin.figure.add_subplot(111)
@@ -252,7 +242,6 @@ class Ui_MainWindow(object):
 
         # Redraw the canvas
         self.canvas_sin.draw()
-
 
 
 
