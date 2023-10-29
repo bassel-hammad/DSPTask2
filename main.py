@@ -29,6 +29,15 @@ class MyApp(QMainWindow):
 
         self.sinwaves_list = []  # List to store sinwaves objects
 
+        # Create empty FigureCanvas widgets
+        self.canvas_1 = FigureCanvas(plt.figure())
+        self.canvas_2 = FigureCanvas(plt.figure())
+        self.canvas_3 = FigureCanvas(plt.figure())
+        self.canvas_sin = FigureCanvas(plt.figure())
+        self.canvas_added = FigureCanvas(plt.figure())
+
+
+
 
         
 
@@ -135,17 +144,20 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         self.my_siganl=signal()
         self.my_siganl.upload_signal_data([1,2],[2,3])
+
         self.canvas_1 = FigureCanvas(plt.figure())
         self.canvas_2 = FigureCanvas(plt.figure())
         self.canvas_3 = FigureCanvas(plt.figure())
         #create canvas_sin for sinwaves
         self.canvas_sin = FigureCanvas(plt.figure())
+        self.canvas_added = FigureCanvas(plt.figure())
 
         self.signalLayout.layout().addWidget(self.canvas_1)
         self.signalLayout.layout().addWidget(self.canvas_2)
         self.signalLayout.layout().addWidget(self.canvas_3)
         #add canvas_sin in the composeLayout
         self.composeLayout.layout().addWidget(self.canvas_sin)
+        self.composeLayout.layout().addWidget(self.canvas_added)
 
         # Connect the "Open" action to the open_csv_file function
         self.actionOpen.triggered.connect(self.open_csv_file)
@@ -162,6 +174,19 @@ class Ui_MainWindow(object):
         self.frequency = 1.0
         self.amplitude = 1.0
 
+        self.init_empty_canvases()
+
+    def init_empty_canvases(self):
+        # Create empty subplots for the canvases
+        for canvas in [self.canvas_1, self.canvas_2, self.canvas_3, self.canvas_sin, self.canvas_added]:
+            canvas.figure.add_subplot(111)
+
+        # Add the empty canvases to the layouts
+        self.signalLayout.layout().addWidget(self.canvas_1)
+        self.signalLayout.layout().addWidget(self.canvas_2)
+        self.signalLayout.layout().addWidget(self.canvas_3)
+        self.composeLayout.layout().addWidget(self.canvas_sin)
+        self.composeLayout.layout().addWidget(self.canvas_added)
 
 
     def open_csv_file(self):
@@ -178,6 +203,7 @@ class Ui_MainWindow(object):
             # Clear the previous plot
             self.canvas_1.figure.clear()
             self.canvas_2.figure.clear()
+            self.canvas_3.figure.clear()
             # Create a new plot and display it
             self.my_siganl.sample_signal()
             ax = self.canvas_1.figure.add_subplot(1,1,1)
