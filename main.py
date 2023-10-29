@@ -11,35 +11,6 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from signals import signal
 
-class MyApp(QMainWindow):
-    def __init__(self):
-        super().__init__()
-
-        # Create the main window and UI
-        self.ui = Ui_MainWindow()
-        self.ui.setupUi(self)
-
-        # Connect the "Open" action to the open_csv_file function
-        #self.ui.actionOpen.triggered.connect(self.open_csv_file)
-
-        # Create a widget to display the matplotlib plot
-        self.plot_widget = QWidget(self.ui.viewerTab)
-        self.ui.signalLayout.addWidget(self.plot_widget)
-        self.plot_widget.setLayout(QtWidgets.QVBoxLayout())
-
-        self.sinwaves_list = []  # List to store sinwaves objects
-
-        # Create empty FigureCanvas widgets
-        self.canvas_1 = FigureCanvas(plt.figure())
-        self.canvas_2 = FigureCanvas(plt.figure())
-        self.canvas_3 = FigureCanvas(plt.figure())
-        self.canvas_sin = FigureCanvas(plt.figure())
-        self.canvas_added = FigureCanvas(plt.figure())
-
-
-
-
-        
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -292,8 +263,12 @@ class Ui_MainWindow(object):
 
 
 
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = MyApp()
-    window.show()
-    sys.exit(app.exec_())
+def main():
+    app = QtWidgets.QApplication(sys.argv)  # Create the application instance
+    MainWindow = QtWidgets.QMainWindow()  # Create the main window
+    ui = Ui_MainWindow()  # Create an instance of the UI class
+    ui.setupUi(MainWindow)  # Set up the UI for the main window
+    MainWindow.show()  # Display the main window
+    sys.exit(app.exec_())  # Run the application event loop
+
+main()
