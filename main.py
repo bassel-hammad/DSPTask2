@@ -109,13 +109,13 @@ class Ui_MainWindow(object):
         self.actionOpen.setObjectName("actionOpen")
         self.menuFile.addAction(self.actionOpen)
         self.menubar.addAction(self.menuFile.menuAction())
-
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         self.my_siganl=signal()
         self.my_siganl.upload_signal_data([1,2],[2,3])
 
+        # create canvas_1,2,3
         self.canvas_1 = FigureCanvas(plt.figure())
         self.canvas_2 = FigureCanvas(plt.figure())
         self.canvas_3 = FigureCanvas(plt.figure())
@@ -123,6 +123,7 @@ class Ui_MainWindow(object):
         self.canvas_sin = FigureCanvas(plt.figure())
         self.canvas_added = FigureCanvas(plt.figure())
 
+        # add canvas_1,2,3 in the signalLayout
         self.signalLayout.layout().addWidget(self.canvas_1)
         self.signalLayout.layout().addWidget(self.canvas_2)
         self.signalLayout.layout().addWidget(self.canvas_3)
@@ -145,6 +146,7 @@ class Ui_MainWindow(object):
         self.frequency = 1.0
         self.amplitude = 1.0
 
+        # initialize empty canvases
         self.init_empty_canvases()
 
     def init_empty_canvases(self):
@@ -220,8 +222,6 @@ class Ui_MainWindow(object):
         self.update_sine_wave_plot()
 
     def update_sine_wave_plot(self):
-
-
 
         # Recreate and update the sine wave plot with the current frequency and amplitude
         self.canvas_sin.figure.clear()
