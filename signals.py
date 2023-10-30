@@ -57,6 +57,7 @@ class signal():
         #https://www.geeksforgeeks.org/numpy-interp-function-python/
         #i make sample_freq zero by dafult ,so the user dont need to send it , if he wants to sample by 2*Fmax
         # Calculate the time step between samples
+
         if(sample_freq==0):
             sample_freq=2*self.Max_frequency # Nyquist rate (Hz)
             time_step = 1 / sample_freq # Time interval between samples (seconds)
@@ -71,6 +72,7 @@ class signal():
         self.samples_time = sampled_time
         self.samples_amplitude = sampled_amplitude
         self.fsampling = sample_freq
+        self.reconstruct_from_samples()
 
     def reconstruct_from_samples(self):
         self.reconstructed.clear()
