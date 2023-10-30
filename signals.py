@@ -59,8 +59,10 @@ class signal():
         # Calculate the time step between samples
 
         if(sample_freq==0):
-            sample_freq=2*self.Max_frequency # Nyquist rate (Hz)
-            time_step = 1 / sample_freq # Time interval between samples (seconds)
+            sample_freq=self.Max_frequency
+
+        sample_freq=2*sample_freq # Nyquist rate (Hz)
+        time_step = 1 / sample_freq # Time interval between samples (seconds)
 
         # Generate the time array based on the sample frequency
         max_time = self.x_data[self.MAX_SAMPLES-1]
