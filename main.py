@@ -242,6 +242,9 @@ class Ui_MainWindow(object):
             #self.MySignal(time,magnitude)
             self.my_siganl.upload_signal_data(time,magnitude)
             self.FsampleSlider.setRange(0 , 4*self.my_siganl.Max_frequency)
+            self.FsampleSlider.setValue(self.my_siganl.Max_frequency)
+            self.FsampleDisp.display(self.FsampleSlider.value())
+            self.FsampleDisp.setValue()
             # Clear the previous plot
             self.my_siganl.sample_signal()
             self.draw_plots()
@@ -250,6 +253,7 @@ class Ui_MainWindow(object):
         self.canvas_2.figure.clear()
         self.canvas_3.figure.clear()
         # Create a new plot and display it
+        self.FsampleDisp.display(self.FsampleSlider.value())
         ax = self.canvas_1.figure.add_subplot(1,1,1)
         ax.plot(self.my_siganl.x_data, self.my_siganl.y_data,linewidth=3)
         ax.set_xlabel("Time")
