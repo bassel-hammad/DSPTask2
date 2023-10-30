@@ -77,7 +77,7 @@ class signal():
         self.reconstruct_from_samples()
 
     def reconstruct_from_samples(self):
-        self.reconstructed.clear()
+        self.reconstructed=np.array([])
          #self.reconstructed = np.zeros_like(self.x_data)
          #for i, ti in enumerate(self.x_data):
             #self.reconstructed[i] = np.sum(self.samples_amplitude * np.sinc(2*self.Max_frequency* (ti - self.samples_time )))
