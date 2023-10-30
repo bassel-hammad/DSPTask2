@@ -241,7 +241,7 @@ class Ui_MainWindow(object):
             magnitude = df.iloc[:,1]
             #self.MySignal(time,magnitude)
             self.my_siganl.upload_signal_data(time,magnitude)
-            self.FsampleSlider.setRange(0,4*self.my_siganl.max_frequency)
+            self.FsampleSlider.setRange(0 , 4*self.my_siganl.max_frequency)
             # Clear the previous plot
             self.canvas_1.figure.clear()
             self.canvas_2.figure.clear()
