@@ -244,7 +244,6 @@ class Ui_MainWindow(object):
             self.FsampleSlider.setRange(0 , 4*self.my_siganl.Max_frequency)
             self.FsampleSlider.setValue(self.my_siganl.Max_frequency)
             self.FsampleDisp.display(self.FsampleSlider.value())
-            self.FsampleDisp.setValue()
             # Clear the previous plot
             self.my_siganl.sample_signal()
             self.draw_plots()
