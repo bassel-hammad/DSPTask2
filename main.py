@@ -10,6 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from signals import signal
+from sinwaves import sinwaves
 
 
 class Ui_MainWindow(object):
@@ -198,7 +199,7 @@ class Ui_MainWindow(object):
 
         # connect Addsinbutton to plot_sinwaves function
         self.addSinButton.clicked.connect(self.update_sine_wave_plot)
-
+        self.addSinButton.mouseDoubleClickEvent(self.update_sine_wave_plot)
         # Connect the slider to the change_frequency function
         self.FcomposeSlider.valueChanged.connect(self.change_frequency)
         # Connect the amplitudeSlider to the change_amplitude function
@@ -281,18 +282,50 @@ class Ui_MainWindow(object):
         self.canvas_3.draw()
 
 
-
+   
     def change_frequency(self, value):
         # Get the slider value and use it to update the frequency
         self.frequency = value / 10.0  # You may need to adjust this scaling factor
         # Update the sine wave plot
         self.update_sine_wave_plot()
-
+        
     def change_amplitude(self, value):
         # Get the slider value and use it to update the amplitude
         self.amplitude = value / 10.0  # You may need to adjust this scaling factor
         # Update the sine wave plot
         self.update_sine_wave_plot()
+       
+      
+    sinwaves_lst=[]   
+    #def create_sinwaves(self): lesa feha sh08l
+     
+
+    def sum_sinwaves(sinwaves_lst):
+      sum_amplitude = 0
+      max_frequency = 0
+
+     # Calculate the sum of amplitudes and find the maximum frequency
+      for sinwaves in sinwaves_lst:
+        sum_amplitude += sinwaves.amplitude
+        if sinwaves.frequency > max_frequency:
+            max_frequency = sinwaves.frequency
+
+    # Generate x-axis values
+      x = np.linspace(0, 2 * np.pi, 1000)
+
+    # Calculate y-axis values for the summed sine wave
+      y_summed = np.zeros_like(x)
+      for sinwaves in sinwaves_lst:
+        y_summed += sinwaves.amplitude * np.sin(x * sinwaves.frequency * 2 * np.pi)
+
+     # Create a new SinWave object with the maximum frequency and summed amplitude
+      summed_wave = sinwaves(max_frequency, sum_amplitude)
+
+    # Plot the summed sine wave
+   
+
+      return summed_wave
+
 
     def update_sine_wave_plot(self):
 
@@ -312,7 +345,8 @@ class Ui_MainWindow(object):
 
         # Redraw the canvas
         self.canvas_sin.draw()
-
+    
+    
 
 
     def retranslateUi(self, MainWindow):
