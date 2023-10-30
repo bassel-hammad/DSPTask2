@@ -199,7 +199,7 @@ class Ui_MainWindow(object):
 
         # connect Addsinbutton to plot_sinwaves function
         self.addSinButton.clicked.connect(self.update_sine_wave_plot)
-        self.addSinButton.mouseDoubleClickEvent(self.update_sine_wave_plot)
+       
         # Connect the slider to the change_frequency function
         self.FcomposeSlider.valueChanged.connect(self.change_frequency)
         # Connect the amplitudeSlider to the change_amplitude function
@@ -297,7 +297,10 @@ class Ui_MainWindow(object):
        
       
     sinwaves_lst=[]   
-    #def create_sinwaves(self): lesa feha sh08l
+    def create_sinwaves(self,sinwaves_lst): 
+        new_sinwaves=sinwaves(self.amplitude, self.frequency)
+        sinwaves_lst.append(new_sinwaves)
+        return new_sinwaves
      
 
     def sum_sinwaves(sinwaves_lst):
