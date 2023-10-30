@@ -79,6 +79,7 @@ class Ui_MainWindow(object):
         self.FsampleSlider = QtWidgets.QSlider(self.frame_4)
         self.FsampleSlider.setOrientation(QtCore.Qt.Horizontal)
         self.FsampleSlider.setObjectName("FsampleSlider")
+        self.FcomposeSlider.setRange(0,4)
         self.gridLayout_5.addWidget(self.FsampleSlider, 0, 1, 1, 1)
         self.label_4 = QtWidgets.QLabel(self.frame_4)
         self.label_4.setObjectName("label_4")
@@ -210,6 +211,10 @@ class Ui_MainWindow(object):
 
         # initialize empty canvases
         self.init_empty_canvases()
+
+
+
+        #siganl of sliders 
 
     def init_empty_canvases(self):
         # Create empty subplots for the canvases
