@@ -215,7 +215,7 @@ class Ui_MainWindow(object):
 
 
         #siganl of sliders 
-        self.FsampleSlider.valueChanged.connect(self.my_siganl)
+        self.FsampleSlider.valueChanged.connect(self.my_siganl.sample_signal)
 
     def init_empty_canvases(self):
         # Create empty subplots for the canvases
