@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 class signal():
     def __init__(self):
-        self.MAX_SAMPLES = 3000
+        self.MAX_SAMPLES = 1000
         self.x_data = []
         self.y_data = []
         self.samples_time = []
