@@ -8,14 +8,14 @@ class signal():
         self.y_data = []
         self.samples_time = []
         self.samples_amplitude = []
-        self.fsampling = 1
-        self.Max_frequency= 0
+        self.fsampling = 1.0
+        self.Max_frequency= 0.0
         self.reconstructed=[]
         self.difference_original_reconstructed=[]
     def upload_signal_data(self,x_data,y_data,max_freq=0):
         self.MAX_SAMPLES =1000
-        self.fsampling = 1
-        self.Max_frequency= 0
+        self.fsampling = 1.0
+        self.Max_frequency= 0.0
         if(len(x_data)<self.MAX_SAMPLES ):
             self.MAX_SAMPLES = len(x_data)
         self.x_data=np.array(x_data[0:self.MAX_SAMPLES])
@@ -53,16 +53,17 @@ class signal():
         print("Max frequency fft: " + str(self.Max_frequency)) 
 
 
-    def sample_signal(self,sample_freq=0):
+    def sample_signal(self,sample_freq=-1):
         #https://www.geeksforgeeks.org/numpy-interp-function-python/
         #i make sample_freq zero by dafult ,so the user dont need to send it , if he wants to sample by 2*Fmax
         # Calculate the time step between samples
 
-        if(sample_freq==0):
+        if(sample_freq==-1):
             sample_freq=self.Max_frequency
 
         sample_freq=2*sample_freq # Nyquist rate (Hz)
         time_step = 1 / sample_freq # Time interval between samples (seconds)
+        print(sample_freq)
 
         # Generate the time array based on the sample frequency
         max_time = self.x_data[self.MAX_SAMPLES-1]
