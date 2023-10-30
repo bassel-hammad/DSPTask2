@@ -255,7 +255,6 @@ class Ui_MainWindow(object):
             ax.set_title("Original Signal")
             ax.grid(True)
             ax.plot(self.my_siganl.samples_time, self.my_siganl.samples_amplitude, 'ro',  markersize=3,label='Sampled Signal')
-            self.my_siganl.reconstruct_from_samples()
             ax_reconstructed = self.canvas_2.figure.add_subplot(1,1,1)
             ax_reconstructed.set_xlabel("Time")
             ax_reconstructed.set_ylabel("Magnitude")
