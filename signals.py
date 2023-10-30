@@ -54,6 +54,7 @@ class signal():
 
 
     def sample_signal(self,sample_freq=0):
+        #https://www.geeksforgeeks.org/numpy-interp-function-python/
         #i make sample_freq zero by dafult ,so the user dont need to send it , if he wants to sample by 2*Fmax
         # Calculate the time step between samples
         if(sample_freq==0):
@@ -72,9 +73,14 @@ class signal():
         self.fsampling = sample_freq
 
     def reconstruct_from_samples(self):
-         self.reconstructed = np.zeros_like(self.x_data)
-         for i, ti in enumerate(self.x_data):
-            self.reconstructed[i] = np.sum(self.samples_amplitude * np.sinc(2*self.Max_frequency* (ti - self.samples_time )))
+        self.reconstructed.clear()
+         #self.reconstructed = np.zeros_like(self.x_data)
+         #for i, ti in enumerate(self.x_data):
+            #self.reconstructed[i] = np.sum(self.samples_amplitude * np.sinc(2*self.Max_frequency* (ti - self.samples_time )))
+            #https://gist.github.com/endolith/1297227
+            #sinc_ = np.sinc((u - s[:, None]) / (s[1] - s[0]))
+        sinc_ = np.sinc(((np.tile(self.x_data, (len(self.samples_time), 1))) - self.samples_time[:, None]) / (self.samples_time[1] - self.samples_time[0]))
+        self.reconstructed= np.dot(self.samples_amplitude, sinc_)
 
     def calc_difference(self):
         self.difference_original_reconstructed= self.y_data - self.reconstructed
