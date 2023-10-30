@@ -212,6 +212,12 @@ class Ui_MainWindow(object):
         # initialize empty canvases
         self.init_empty_canvases()
 
+
+
+        #siganl of sliders 
+        self.FsampleSlider.valueChanged.connect(self.my_siganl.sample_signal)
+        self.FsampleSlider.valueChanged.connect(self.draw_plots)
+
     def init_empty_canvases(self):
         # Create empty subplots for the canvases
         for canvas in [self.canvas_1, self.canvas_2, self.canvas_3, self.canvas_sin, self.canvas_added]:
@@ -236,39 +242,44 @@ class Ui_MainWindow(object):
             magnitude = df.iloc[:,1]
             #self.MySignal(time,magnitude)
             self.my_siganl.upload_signal_data(time,magnitude)
+            self.FsampleSlider.setRange(0 , 4*self.my_siganl.Max_frequency)
+            self.FsampleSlider.setValue(self.my_siganl.Max_frequency)
+            self.FsampleDisp.display(self.FsampleSlider.value())
             # Clear the previous plot
-            self.canvas_1.figure.clear()
-            self.canvas_2.figure.clear()
-            self.canvas_3.figure.clear()
-            # Create a new plot and display it
             self.my_siganl.sample_signal()
-            ax = self.canvas_1.figure.add_subplot(1,1,1)
-            ax.plot(self.my_siganl.x_data, self.my_siganl.y_data,linewidth=3)
-            ax.set_xlabel("Time")
-            ax.set_ylabel("Magnitude")
-            ax.set_title("Original Signal")
-            ax.grid(True)
-            ax.plot(self.my_siganl.samples_time, self.my_siganl.samples_amplitude, 'ro',  markersize=3,label='Sampled Signal')
-            self.my_siganl.reconstruct_from_samples()
-            ax_reconstructed = self.canvas_2.figure.add_subplot(1,1,1)
-            ax_reconstructed.set_xlabel("Time")
-            ax_reconstructed.set_ylabel("Magnitude")
-            ax_reconstructed.set_title("Reconstructed Signal")
-            ax_reconstructed.grid(True)
-            ax_reconstructed.plot(self.my_siganl.x_data, self.my_siganl.reconstructed,linewidth=3)
-            self.my_siganl.calc_difference()
-            ax_difference = self.canvas_3.figure.add_subplot(1,1,1)
-            ax_difference.set_xlabel("Time")
-            ax_difference.set_ylabel("Magnitude")
-            ax_difference.set_title("ax_difference Signal")
-            ax_difference.grid(True)
-            ax_difference.plot(self.my_siganl.x_data, self.my_siganl.difference_original_reconstructed,linewidth=3)
+            self.draw_plots()
+    def draw_plots(self):
+        self.canvas_1.figure.clear()
+        self.canvas_2.figure.clear()
+        self.canvas_3.figure.clear()
+        # Create a new plot and display it
+        self.FsampleDisp.display(self.FsampleSlider.value())
+        ax = self.canvas_1.figure.add_subplot(1,1,1)
+        ax.plot(self.my_siganl.x_data, self.my_siganl.y_data,linewidth=3)
+        ax.set_xlabel("Time")
+        ax.set_ylabel("Magnitude")
+        ax.set_title("Original Signal")
+        ax.grid(True)
+        ax.plot(self.my_siganl.samples_time, self.my_siganl.samples_amplitude, 'ro',  markersize=3,label='Sampled Signal')
+        ax_reconstructed = self.canvas_2.figure.add_subplot(1,1,1)
+        ax_reconstructed.set_xlabel("Time")
+        ax_reconstructed.set_ylabel("Magnitude")
+        ax_reconstructed.set_title("Reconstructed Signal")
+        ax_reconstructed.grid(True)
+        ax_reconstructed.plot(self.my_siganl.x_data, self.my_siganl.reconstructed,linewidth=3)
+        self.my_siganl.calc_difference()
+        ax_difference = self.canvas_3.figure.add_subplot(1,1,1)
+        ax_difference.set_xlabel("Time")
+        ax_difference.set_ylabel("Magnitude")
+        ax_difference.set_title("ax_difference Signal")
+        ax_difference.grid(True)
+        ax_difference.plot(self.my_siganl.x_data, self.my_siganl.difference_original_reconstructed,linewidth=3)
 
 
             # Redraw the canvas
-            self.canvas_1.draw()
-            self.canvas_2.draw()
-            self.canvas_3.draw()
+        self.canvas_1.draw()
+        self.canvas_2.draw()
+        self.canvas_3.draw()
 
 
    
