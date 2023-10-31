@@ -18,6 +18,8 @@ class Ui_MainWindow(object):
     def __init__(self):
         self.MainWindow = None
         self.sinwaves_lst = []
+        self.x = np.linspace(0, 2 * np.pi, 1000)
+        self.count=1
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -217,7 +219,7 @@ class Ui_MainWindow(object):
         #siganl of sliders 
         self.FsampleSlider.valueChanged.connect(self.my_siganl.sample_signal)
         self.FsampleSlider.valueChanged.connect(self.draw_plots)
-
+        self.saveButton.clicked.connect(self.save_plot_data_as_csv)
         # Connect the currentIndexChanged signal of the combo box to the slot function
         self.sinComboBox.currentIndexChanged.connect(self.plot_selected_sinwave)
 
@@ -245,8 +247,8 @@ class Ui_MainWindow(object):
             magnitude = df.iloc[:,1]
             #self.MySignal(time,magnitude)
             self.my_siganl.upload_signal_data(time,magnitude)
-            self.FsampleSlider.setRange(0 , 4*self.my_siganl.Max_frequency)
-            self.FsampleSlider.setValue(self.my_siganl.Max_frequency)
+            self.FsampleSlider.setRange(0 , int(4*self.my_siganl.Max_frequency))
+            self.FsampleSlider.setValue(int(self.my_siganl.Max_frequency))
             self.FsampleDisp.display(self.FsampleSlider.value())
             # Clear the previous plot
             self.my_siganl.sample_signal()
@@ -381,7 +383,18 @@ class Ui_MainWindow(object):
 
 
     # Generate x-axis values
-    x = np.linspace(0, 2 * np.pi, 1000)
+   
+    def save_plot_data_as_csv(self):
+     filename = f"composer_data{self.count}.csv"
+     with open(filename, 'w', newline='') as csvfile:
+         writer = csv.writer(csvfile)
+         y=self.sum_sinwaves()
+         writer.writerow(['x', 'y'])
+         for i in range(len(self.x)):
+            writer.writerow([self.x[i], y[i]])
+
+         
+         self.count+=1
     
     def plot_composer(self):
             self.canvas_added.figure.clear()
