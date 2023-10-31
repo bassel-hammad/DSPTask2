@@ -13,9 +13,11 @@ from signals import signal
 from sinwaves import sinwaves
 
 
+
 class Ui_MainWindow(object):
     def __init__(self):
         self.MainWindow = None
+        self.sinwaves_lst = []
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -198,7 +200,7 @@ class Ui_MainWindow(object):
         self.actionOpen.triggered.connect(self.open_csv_file)
 
         # connect Addsinbutton to plot_sinwaves function
-        self.addSinButton.clicked.connect(self.update_sine_wave_plot)
+        self.addSinButton.clicked.connect(self.plot_new_sinwave)
        
         # Connect the slider to the change_frequency function
         self.FcomposeSlider.valueChanged.connect(self.change_frequency)
@@ -212,11 +214,12 @@ class Ui_MainWindow(object):
         # initialize empty canvases
         self.init_empty_canvases()
 
-
-
         #siganl of sliders 
         self.FsampleSlider.valueChanged.connect(self.my_siganl.sample_signal)
         self.FsampleSlider.valueChanged.connect(self.draw_plots)
+
+        # Connect the currentIndexChanged signal of the combo box to the slot function
+        self.sinComboBox.currentIndexChanged.connect(self.plot_selected_sinwave)
 
     def init_empty_canvases(self):
         # Create empty subplots for the canvases
@@ -248,6 +251,7 @@ class Ui_MainWindow(object):
             # Clear the previous plot
             self.my_siganl.sample_signal()
             self.draw_plots()
+
     def draw_plots(self):
         self.canvas_1.figure.clear()
         self.canvas_2.figure.clear()
@@ -282,26 +286,100 @@ class Ui_MainWindow(object):
         self.canvas_3.draw()
 
 
-   
+    def plot_selected_sinwave(self, index):
+        # Get the index of the selected sinwave
+        selected_sinwave = self.sinwaves_lst[index]
+
+        # Clear the canvas for the selected sinwave
+        self.canvas_sin.figure.clear()
+        ax = self.canvas_sin.figure.add_subplot(111)
+
+        # Plot the selected sinwave
+        ax.plot(selected_sinwave.Xaxis, selected_sinwave.Yaxis)
+        ax.set_xlabel("Time")
+        ax.set_ylabel("Amplitude")
+        ax.set_title(f"Sine Wave (Frequency: {selected_sinwave.frequency} Hz, Amplitude: {selected_sinwave.amplitude})")
+        ax.grid(True)
+
+        # Redraw the canvas
+        self.canvas_sin.draw()
+
+    def plot_new_sinwave(self):
+        self.canvas_sin.figure.clear()
+        ax = self.canvas_sin.figure.add_subplot(111)
+
+        #self.create_sinwaves(self.sinwaves_lst)
+        new_sinwaves = sinwaves(self.amplitude, self.frequency)
+        new_sinwaves.name = f"SineWave{len(self.sinwaves_lst) + 1}"
+        self.sinwaves_lst.append(new_sinwaves)
+
+        ax.plot(new_sinwaves.Xaxis, new_sinwaves.Yaxis)
+        ax.set_xlabel("Time")
+        ax.set_ylabel("Amplitude")
+        ax.set_title(f"Sine Wave (Frequency: {self.frequency} Hz, Amplitude: {self.amplitude})")
+        ax.grid(True)
+
+        #call Function addToSinComboBox To add names of waves in comboBox
+        self.addToSinComboBox()
+
+        self.canvas_sin.draw()
+
     def change_frequency(self, value):
         # Get the slider value and use it to update the frequency
         self.frequency = value / 10.0  # You may need to adjust this scaling factor
-        # Update the sine wave plot
-        self.update_sine_wave_plot()
-        
+        selected_index = self.sinComboBox.currentIndex()  # Get the index of the selected sinwave
+
+        if selected_index >= 0 and selected_index < len(self.sinwaves_lst):
+            selected_sinwave = self.sinwaves_lst[selected_index]
+            selected_sinwave.frequency = self.frequency  # Update the frequency of the selected sinwave
+
+            # Update the data for the selected sinwave with the updated frequency
+            selected_sinwave.update_data()
+
+            # Clear the canvas for the selected sinwave
+            self.canvas_sin.figure.clear()
+            ax = self.canvas_sin.figure.add_subplot(111)
+
+            # Plot the selected sinwave with the updated frequency
+            ax.plot(selected_sinwave.Xaxis, selected_sinwave.Yaxis)
+            ax.set_xlabel("Time")
+            ax.set_ylabel("Amplitude")
+            ax.set_title(
+                f"Sine Wave (Frequency: {selected_sinwave.frequency} Hz, Amplitude: {selected_sinwave.amplitude})")
+            ax.grid(True)
+
+            # Redraw the canvas
+            self.canvas_sin.draw()
+
     def change_amplitude(self, value):
-        # Get the slider value and use it to update the amplitude
+        # Get the slider value and use it to update the frequency
         self.amplitude = value / 10.0  # You may need to adjust this scaling factor
-        # Update the sine wave plot
-        self.update_sine_wave_plot()
-       
-      
-    sinwaves_lst=[]   
-    def create_sinwaves(self,sinwaves_lst): 
-        new_sinwaves=sinwaves(self.amplitude, self.frequency)
-        sinwaves_lst.append(new_sinwaves)
-        return new_sinwaves
-     
+        selected_index = self.sinComboBox.currentIndex()  # Get the index of the selected sinwave
+
+        if selected_index >= 0 and selected_index < len(self.sinwaves_lst):
+            selected_sinwave = self.sinwaves_lst[selected_index]
+            selected_sinwave.amplitude = self.amplitude  # Update the frequency of the selected sinwave
+
+            # Update the data for the selected sinwave with the updated frequency
+            selected_sinwave.update_data()
+
+            # Clear the canvas for the selected sinwave
+            self.canvas_sin.figure.clear()
+            ax = self.canvas_sin.figure.add_subplot(111)
+
+            # Plot the selected sinwave with the updated frequency
+            ax.plot(selected_sinwave.Xaxis, selected_sinwave.Yaxis)
+            ax.set_xlabel("Time")
+            ax.set_ylabel("Amplitude")
+            ax.set_title(
+                f"Sine Wave (Frequency: {selected_sinwave.frequency} Hz, Amplitude: {selected_sinwave.amplitude})")
+            ax.grid(True)
+
+            # Redraw the canvas
+            self.canvas_sin.draw()
+
+
+
 
     def sum_sinwaves(sinwaves_lst):
       sum_amplitude = 0
@@ -329,28 +407,13 @@ class Ui_MainWindow(object):
 
       return summed_wave
 
+    #add sinwaves names to comboBox
+    def addToSinComboBox(self):
+        self.sinComboBox.clear()  # Clear the existing items
+        for sinwave in self.sinwaves_lst:
+            self.sinComboBox.addItem(sinwave.name)
 
-    def update_sine_wave_plot(self):
-
-        # Recreate and update the sine wave plot with the current frequency and amplitude
-        self.canvas_sin.figure.clear()
-        ax = self.canvas_sin.figure.add_subplot(111)
-
-        # Generate a sine wave with the current frequency and amplitude
-        time = np.linspace(0, 2 * np.pi, 1000)
-        sine_wave = self.amplitude * np.sin(2 * np.pi * self.frequency * time)
-
-        ax.plot(time, sine_wave)
-        ax.set_xlabel("Time")
-        ax.set_ylabel("Amplitude")
-        ax.set_title(f"Sine Wave (Frequency: {self.frequency} Hz, Amplitude: {self.amplitude})")
-        ax.grid(True)
-
-        # Redraw the canvas
-        self.canvas_sin.draw()
-    
-    
-
+    # Define a slot function to plot the selected sinwave
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
