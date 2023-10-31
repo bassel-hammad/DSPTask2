@@ -323,6 +323,7 @@ class Ui_MainWindow(object):
         self.addToSinComboBox()
 
         self.canvas_sin.draw()
+        self.plot_composer()
 
     def change_frequency(self, value):
         # Get the slider value and use it to update the frequency
@@ -379,33 +380,38 @@ class Ui_MainWindow(object):
             self.canvas_sin.draw()
 
 
+    # Generate x-axis values
+    x = np.linspace(0, 2 * np.pi, 1000)
+    
+    def plot_composer(self):
+            self.canvas_added.figure.clear()
+            ax = self.canvas_added.figure.add_subplot(111)
+            y=self.sum_sinwaves()
+            # Plot the selected sinwave with the updated frequency
+            ax.plot(self.x, y)
+            ax.set_xlabel("Time")
+            ax.set_ylabel("Amplitude")
+            ax.grid(True)
 
+            # Redraw the canvas
+            self.canvas_added.draw()
 
-    def sum_sinwaves(sinwaves_lst):
+    def sum_sinwaves(self):
       sum_amplitude = 0
       max_frequency = 0
-
+      y_summed=0
      # Calculate the sum of amplitudes and find the maximum frequency
-      for sinwaves in sinwaves_lst:
+      for sinwaves in self.sinwaves_lst:
         sum_amplitude += sinwaves.amplitude
         if sinwaves.frequency > max_frequency:
             max_frequency = sinwaves.frequency
 
-    # Generate x-axis values
-      x = np.linspace(0, 2 * np.pi, 1000)
-
     # Calculate y-axis values for the summed sine wave
-      y_summed = np.zeros_like(x)
-      for sinwaves in sinwaves_lst:
-        y_summed += sinwaves.amplitude * np.sin(x * sinwaves.frequency * 2 * np.pi)
+      for sinwaves in self.sinwaves_lst:
+        y_summed += sinwaves.Yaxis
+    # RETURN Y_SUMMED TO PLOT IT
 
-     # Create a new SinWave object with the maximum frequency and summed amplitude
-      summed_wave = sinwaves(max_frequency, sum_amplitude)
-
-    # Plot the summed sine wave
-   
-
-      return summed_wave
+      return y_summed
 
     #add sinwaves names to comboBox
     def addToSinComboBox(self):
