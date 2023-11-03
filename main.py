@@ -23,6 +23,7 @@ class Ui_MainWindow(object):
         # Initialize default values for frequency and amplitude
         self.frequency = 1.0
         self.amplitude = 1.0
+        self.count=1
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -228,6 +229,7 @@ class Ui_MainWindow(object):
         # self.sinComboBox.currentIndexChanged.connect(self.plot_selected_sinwave)
         self.sinComboBox.currentIndexChanged.connect(self.change_currentSinIndex)
         self.sinComboBox.currentIndexChanged.connect(self.plot_selected_sinwave)
+        self.removeSinbutton.clicked.connect(self.RemoveSinwave)
 
     def init_empty_canvases(self):
         # Create empty subplots for the canvases
@@ -304,11 +306,13 @@ class Ui_MainWindow(object):
         self.amplitude = 1.0
 
         new_sinwaves = sinwaves(frequency=self.frequency, amplitude=self.amplitude)
-        new_sinwaves.name = f"SineWave{len(self.sinwaves_lst) + 1}"
+        new_sinwaves.name = f"SineWave{self.count}"
+        self.count+=1
+
         self.sinwaves_lst.append(new_sinwaves)
 
-        # call Function addToSinComboBox To add names of waves in comboBox
-        self.addToSinComboBox()
+        # call Function updateComboBox To add names of waves in comboBox
+        self.updateComboBox()
 
         self.sinComboBox.setCurrentIndex(len(self.sinwaves_lst) - 1)
 
@@ -396,9 +400,17 @@ class Ui_MainWindow(object):
         # RETURN Y_SUMMED TO PLOT IT
 
         return y_summed
+    
+    def RemoveSinwave(self):
+        if(len(self.sinwaves_lst)!=0):
+         index = self.sinComboBox.currentIndex()
+         self.sinwaves_lst.pop(index)
+        self.updateComboBox()
+        self.sum_sinwaves()
+
 
     # add sinwaves names to comboBox
-    def addToSinComboBox(self):
+    def updateComboBox(self):
         self.sinComboBox.clear()  # Clear the existing items
         for sinwave in self.sinwaves_lst:
             self.sinComboBox.addItem(sinwave.name)
