@@ -231,7 +231,7 @@ class Ui_MainWindow(object):
 
 
         #connect composeButton => to move created signal to studio
-        self.composeButton.clicked.connect
+        self.composeButton.clicked.connect(self.load_Composed)
 
     def init_empty_canvases(self):
         # Create empty subplots for the canvases
