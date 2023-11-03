@@ -38,10 +38,3 @@ class signal():
 
         print("Max frequency fft: " + str(self.Max_frequency))     
 
-def plot_sinwaves(self):
-     #value of new sin wave (frequency,amplitude)
-     frequncy = self.FcomposeSlider.value()
-     amplitude = self.amplitudeSlider.value()
-     #value of axis
-     xAxis=np.linspace(0,2*np.pi,MAX_SAMPLES)
-     yAxis=(self.amplitude)/(np.sin(self.Xaxis*self.frequency*2*np.pi)) #lesa feha sho8l

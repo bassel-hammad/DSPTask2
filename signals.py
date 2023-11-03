@@ -61,10 +61,21 @@ class signal():
         #i make sample_freq zero by dafult ,so the user dont need to send it , if he wants to sample by 2*Fmax
         # Calculate the time step between samples
 
+        coefficient =2
+
         if(sample_freq==-1):
             self.fsampling=2*self.Max_frequency
         else:
-             self.fsampling=sample_freq
+             self.fsampling=sample_freq*self.Max_frequency
+
+        if (self.fsampling == 0):
+            # Generate x values
+            x = np.linspace(-10, 10, 1000)
+            # Generate y values (all zeros)
+            y = np.zeros_like(x)
+            self.reconstructed = y
+            return
+
 
         #sample_freq=sample_freq # Nyquist rate (Hz)
         time_step = 1 / self.fsampling # Time interval between samples (seconds)

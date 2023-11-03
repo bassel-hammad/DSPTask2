@@ -267,9 +267,10 @@ class Ui_MainWindow(object):
 
     def update_signal_data(self,signal_time,signal_magnitude):
         self.my_siganl.upload_signal_data(signal_time, signal_magnitude)
-        self.FsampleSlider.setRange(0, int(4 * self.my_siganl.Max_frequency))
-        self.FsampleSlider.setValue(2*self.my_siganl.Max_frequency)
-        self.FsampleDisp.display(self.FsampleSlider.value())
+
+        self.FsampleSlider.setRange(0,10)
+        self.FsampleSlider.setValue(1)
+        self.FsampleDisp.display(self.my_siganl.fsampling)
         # Clear the previous plot
         self.my_siganl.sample_signal()
         self.draw_plots()
@@ -334,6 +335,11 @@ class Ui_MainWindow(object):
 
     def plot_selected_sinwave(self):
 
+        if (len(self.sinwaves_lst) == 0):
+            self.canvas_sin.figure.clear()
+            self.canvas_added.figure.clear()
+            return
+
         # Get the index of the selected sinwave
         selected_sinwave = self.sinwaves_lst[self.currentSinIndex]
 
@@ -395,6 +401,7 @@ class Ui_MainWindow(object):
         ax.set_ylabel("Amplitude")
         ax.grid(True)
 
+
         # Redraw the canvas
         self.canvas_added.draw()
 
@@ -416,11 +423,15 @@ class Ui_MainWindow(object):
         return y_summed
     
     def RemoveSinwave(self):
+
         if(len(self.sinwaves_lst)!=0):
          index = self.sinComboBox.currentIndex()
          self.sinwaves_lst.pop(index)
         self.updateComboBox()
         self.sum_sinwaves()
+
+
+
 
 
     # add sinwaves names to comboBox
