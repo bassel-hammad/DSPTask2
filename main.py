@@ -411,7 +411,10 @@ class Ui_MainWindow(object):
         for sinwave in self.sinwaves_lst:
             self.sinComboBox.addItem(sinwave.name)
 
-    # Define a slot function to plot the selected sinwave
+    #fuction to move created signal  to viewer to try Sample & Recover:
+    def load_Composed(self):
+        y = self.sum_sinwaves()
+        self.update_signal_data(self.x,y)
 
 
 
