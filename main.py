@@ -229,6 +229,10 @@ class Ui_MainWindow(object):
         self.sinComboBox.currentIndexChanged.connect(self.change_currentSinIndex)
         self.sinComboBox.currentIndexChanged.connect(self.plot_selected_sinwave)
 
+
+        #connect composeButton => to move created signal to studio
+        self.composeButton.clicked.connect
+
     def init_empty_canvases(self):
         # Create empty subplots for the canvases
         for canvas in [self.canvas_1, self.canvas_2, self.canvas_3, self.canvas_sin, self.canvas_added]:
@@ -404,6 +408,8 @@ class Ui_MainWindow(object):
             self.sinComboBox.addItem(sinwave.name)
 
     # Define a slot function to plot the selected sinwave
+
+
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
