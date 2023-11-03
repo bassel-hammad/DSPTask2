@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 class signal():
     def __init__(self):
+        self.signal_with_noise=[]
         self.MAX_SAMPLES = 1000
         self.x_data = []
         self.y_data = []
@@ -20,6 +21,7 @@ class signal():
             self.MAX_SAMPLES = len(x_data)
         self.x_data=np.array(x_data[0:self.MAX_SAMPLES])
         self.y_data=np.array(y_data[0:self.MAX_SAMPLES])
+        self.signal_with_noise=self.y_data
         if(max_freq==0):
             self.get_max_frequency()
         else:
@@ -31,8 +33,8 @@ class signal():
 
         sampling_frequency = self.fsampling
         max_analog_frequency = (1/2)*self.fsampling
-        magnitude_array = self.y_data
-        total_samples = len(self.y_data)
+        magnitude_array = self.signal_with_noise
+        total_samples = len(self.signal_with_noise)
         time_array = []
         for index in range(total_samples):
                     time_array.append(index/self.fsampling)
@@ -59,18 +61,20 @@ class signal():
         # Calculate the time step between samples
 
         if(sample_freq==-1):
-            sample_freq=self.Max_frequency
+            self.fsampling=2*self.Max_frequency
+        else:
+             self.fsampling=sample_freq
 
-        sample_freq=2*sample_freq # Nyquist rate (Hz)
-        time_step = 1 / sample_freq # Time interval between samples (seconds)
-        print(sample_freq)
+        #sample_freq=sample_freq # Nyquist rate (Hz)
+        time_step = 1 / self.fsampling # Time interval between samples (seconds)
+        print(self.fsampling )
 
         # Generate the time array based on the sample frequency
         max_time = self.x_data[self.MAX_SAMPLES-1]
         sampled_time = np.arange(0, max_time, time_step)
 
         # Interpolate the amplitude data at the sampled time points
-        sampled_amplitude = np.interp(sampled_time, self.x_data, self.y_data)
+        sampled_amplitude = np.interp(sampled_time, self.x_data, self.signal_with_noise)
 
         self.samples_time = sampled_time
         self.samples_amplitude = sampled_amplitude
@@ -89,4 +93,14 @@ class signal():
 
     def calc_difference(self):
         self.difference_original_reconstructed= self.y_data - self.reconstructed
+
+    def add_noise(self,snr):
+        signal=self.y_data
+        signal_power = np.var(self.y_data) # Calculate signal power
+        SNR_dB = snr # Set desired SNR in dB
+        noise_std = np.sqrt(signal_power / (10 ** (SNR_dB / 10))) # Calculate noise standard deviation
+        noise = np.random.normal(0, noise_std, len(signal)) # Generate noise array
+        self.signal_with_noise = signal + noise # Add noise to signal
+        self.sample_signal(self.fsampling)
+        
          
