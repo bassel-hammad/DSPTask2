@@ -81,6 +81,8 @@ class Ui_MainWindow(object):
         self.SNR_Slider = QtWidgets.QSlider(self.frame_4)
         self.SNR_Slider.setOrientation(QtCore.Qt.Horizontal)
         self.SNR_Slider.setObjectName("SNR_Slider")
+        self.SNR_Slider.setRange(0,30)
+        self.SNR_Slider.setSingleStep(10)
         self.gridLayout_5.addWidget(self.SNR_Slider, 1, 1, 1, 1)
         self.FsampleDisp = QtWidgets.QLCDNumber(self.frame_4)
         self.FsampleDisp.setObjectName("FsampleDisp")
@@ -224,6 +226,10 @@ class Ui_MainWindow(object):
         # siganl of sliders
         self.FsampleSlider.valueChanged.connect(self.my_siganl.sample_signal)
         self.FsampleSlider.valueChanged.connect(self.draw_plots)
+        self.SNR_Slider.valueChanged.connect(self.my_siganl.add_noise)
+        self.SNR_Slider.valueChanged.connect(self.draw_plots)
+
+
         self.saveButton.clicked.connect(self.save_plot_data_as_csv)
         # Connect the currentIndexChanged signal of the combo box to the slot function
         # self.sinComboBox.currentIndexChanged.connect(self.plot_selected_sinwave)
@@ -276,7 +282,7 @@ class Ui_MainWindow(object):
         # Create a new plot and display it
         self.FsampleDisp.display(self.FsampleSlider.value())
         ax = self.canvas_1.figure.add_subplot(1, 1, 1)
-        ax.plot(self.my_siganl.x_data, self.my_siganl.y_data, linewidth=3)
+        ax.plot(self.my_siganl.x_data, self.my_siganl.signal_with_noise, linewidth=3)
         ax.set_xlabel("Time")
         ax.set_ylabel("Magnitude")
         ax.set_title("Original Signal")
