@@ -268,9 +268,9 @@ class Ui_MainWindow(object):
     def update_signal_data(self,signal_time,signal_magnitude):
         self.my_siganl.upload_signal_data(signal_time, signal_magnitude)
 
-        self.FsampleSlider.setRange(0,10)
-        self.FsampleSlider.setValue(1)
-        self.FsampleDisp.display(self.my_siganl.fsampling)
+        self.FsampleSlider.setRange(0, int(10 * self.my_siganl.Max_frequency))
+        self.FsampleSlider.setValue(2*self.my_siganl.Max_frequency)
+        self.FsampleDisp.display(self.FsampleSlider.value())
         # Clear the previous plot
         self.my_siganl.sample_signal()
         self.draw_plots()
@@ -450,7 +450,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label_2.setText(_translate("MainWindow", "Max Frequency"))
+        self.label_2.setText(_translate("MainWindow", "Sampling Frequency"))
         self.label.setText(_translate("MainWindow", "Sampling Frequency ="))
         self.label_4.setText(_translate("MainWindow", "   SNR   Level     ="))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.viewerTab), _translate("MainWindow", "Viewer"))
