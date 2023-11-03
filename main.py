@@ -334,7 +334,7 @@ class Ui_MainWindow(object):
         # Redraw the canvas
         self.canvas_sin.draw()
 
-        # self.plot_composer()
+        self.plot_composer()
 
     def change_frequency(self, value):
         # Get the slider value and use it to update the frequency
@@ -386,9 +386,9 @@ class Ui_MainWindow(object):
         y_summed = 0
         # Calculate the sum of amplitudes and find the maximum frequency
         for sinwaves in self.sinwaves_lst:
-            sum_amplitude += sinwaves.amplitude
-            if sinwaves.frequency > max_frequency:
-                max_frequency = sinwaves.frequency
+            sum_amplitude += sinwaves.get_amplitude()
+            if sinwaves.get_frequency() > max_frequency:
+                max_frequency = sinwaves.get_frequency()
 
         # Calculate y-axis values for the summed sine wave
         for sinwaves in self.sinwaves_lst:
