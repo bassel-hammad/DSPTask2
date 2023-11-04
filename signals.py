@@ -59,9 +59,9 @@ class signal():
     def sample_signal(self,sample_freq=-1):
 
         if(sample_freq==-1):
-            self.fsampling=self.Max_frequency
+            self.fsampling=2*self.Max_frequency
         else:
-             self.fsampling=sample_freq*2
+             self.fsampling=sample_freq
         if (self.fsampling == 0):
             # Handle the case when fsampling is zero
             self.reconstructed = np.zeros(self.MAX_SAMPLES)  # Or set it to an appropriate default
