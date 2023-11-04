@@ -67,7 +67,7 @@ class signal():
         coefficient =2
 
         if(sample_freq==-1):
-            self.fsampling=2*self.Max_frequency+2
+            self.fsampling=2*self.Max_frequency
         else:
              self.fsampling=sample_freq
 
