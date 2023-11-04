@@ -4,7 +4,7 @@ import pandas as pd
 class signal():
     def __init__(self):
         self.signal_with_noise=[]
-        self.MAX_SAMPLES = 2000
+        self.MAX_SAMPLES = 1229
         self.x_data = []
         self.y_data = []
         self.samples_time = []
@@ -13,10 +13,8 @@ class signal():
         self.Max_frequency= 0.0
         self.reconstructed=[]
         self.difference_original_reconstructed=[]
-
-
     def upload_signal_data(self,x_data,y_data,max_freq=0):
-        self.MAX_SAMPLES =2000
+        self.MAX_SAMPLES =1229
         self.fsampling = 1.0
         self.Max_frequency= 0.0
         if(len(x_data)<self.MAX_SAMPLES ):
@@ -58,27 +56,18 @@ class signal():
         print("Max frequency fft: " + str(self.Max_frequency)) 
 
 
-
     def sample_signal(self,sample_freq=-1):
-        #https://www.geeksforgeeks.org/numpy-interp-function-python/
-        #i make sample_freq zero by dafult ,so the user dont need to send it , if he wants to sample by 2*Fmax
-        # Calculate the time step between samples
-
-        coefficient =2
 
         if(sample_freq==-1):
-            self.fsampling=2*self.Max_frequency
+            self.fsampling=self.Max_frequency
         else:
-             self.fsampling=sample_freq
-
+             self.fsampling=sample_freq*2
         if (self.fsampling == 0):
-            # Generate x values
-            x = np.linspace(-10, 10, 1000)
-            # Generate y values (all zeros)
-            y = np.zeros_like(x)
-            self.reconstructed = y
+            # Handle the case when fsampling is zero
+            self.reconstructed = np.zeros(self.MAX_SAMPLES)  # Or set it to an appropriate default
+            self.samples_time = np.linspace(0, self.x_data[self.MAX_SAMPLES - 1], self.MAX_SAMPLES)
+            self.samples_amplitude = np.zeros(self.MAX_SAMPLES)  # Or set it to an appropriate default
             return
-
 
         #sample_freq=sample_freq # Nyquist rate (Hz)
         time_step = 1 / self.fsampling # Time interval between samples (seconds)
