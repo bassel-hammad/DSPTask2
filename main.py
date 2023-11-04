@@ -265,8 +265,8 @@ class Ui_MainWindow(object):
             # self.MySignal(time,magnitude)
             self.update_signal_data(time,magnitude)
 
-    def update_signal_data(self,signal_time,signal_magnitude):
-        self.my_siganl.upload_signal_data(signal_time, signal_magnitude)
+    def update_signal_data(self,signal_time,signal_magnitude,max_freq=0):
+        self.my_siganl.upload_signal_data(signal_time, signal_magnitude,max_freq)
 
         self.FsampleSlider.setRange(0, int(10 * self.my_siganl.Max_frequency))
         self.FsampleSlider.setValue(2*self.my_siganl.Max_frequency)
@@ -410,13 +410,13 @@ class Ui_MainWindow(object):
 
     def sum_sinwaves(self):
         sum_amplitude = 0
-        max_frequency = 0
+        self.max_frequency = 0
         y_summed = 0
         # Calculate the sum of amplitudes and find the maximum frequency
         for sinwaves in self.sinwaves_lst:
             sum_amplitude += sinwaves.get_amplitude()
-            if sinwaves.get_frequency() > max_frequency:
-                max_frequency = sinwaves.get_frequency()
+            if sinwaves.get_frequency() > self.max_frequency:
+                self.max_frequency = sinwaves.get_frequency()
 
         # Calculate y-axis values for the summed sine wave
         for sinwaves in self.sinwaves_lst:
@@ -446,7 +446,7 @@ class Ui_MainWindow(object):
     #fuction to move created signal  to viewer to try Sample & Recover:
     def load_Composed(self):
         y = self.sum_sinwaves()
-        self.update_signal_data(self.x,y)
+        self.update_signal_data(self.x,y,self.max_frequency)
 
 
 
