@@ -72,9 +72,9 @@ class Ui_MainWindow(object):
         self.label_2 = QtWidgets.QLabel(self.frame_4)
         self.label_2.setObjectName("label_2")
         self.gridLayout_5.addWidget(self.label_2, 0, 3, 1, 1)
-        self.SNR_Disp = QtWidgets.QLCDNumber(self.frame_4)
-        self.SNR_Disp.setObjectName("SNR_Disp")
-        self.gridLayout_5.addWidget(self.SNR_Disp, 1, 2, 1, 1)
+        self.Max_freq_Display = QtWidgets.QLCDNumber(self.frame_4)
+        self.Max_freq_Display.setObjectName("Max_freq_Display")
+        self.gridLayout_5.addWidget(self.Max_freq_Display, 1, 2, 1, 1)
         self.label = QtWidgets.QLabel(self.frame_4)
         self.label.setObjectName("label")
         self.gridLayout_5.addWidget(self.label, 0, 0, 1, 1)
@@ -271,6 +271,8 @@ class Ui_MainWindow(object):
         self.FsampleSlider.setRange(0, int(10 * self.my_siganl.Max_frequency))
         self.FsampleSlider.setValue(2*self.my_siganl.Max_frequency)
         self.FsampleDisp.display(self.FsampleSlider.value())
+        self.FsampleSlider.setSingleStep(self.my_siganl.Max_frequency)
+        self.Max_freq_Display.display(self.my_siganl.Max_frequency)
         # Clear the previous plot
         self.my_siganl.sample_signal()
         self.draw_plots()
@@ -282,6 +284,7 @@ class Ui_MainWindow(object):
         self.canvas_3.figure.clear()
         # Create a new plot and display it
         self.FsampleDisp.display(self.FsampleSlider.value())
+        
         ax = self.canvas_1.figure.add_subplot(1, 1, 1)
         ax.plot(self.my_siganl.x_data, self.my_siganl.signal_with_noise, linewidth=3)
         ax.set_xlabel("Time")
