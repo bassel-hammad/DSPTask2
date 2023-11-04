@@ -78,6 +78,7 @@ class signal():
         sampled_time = np.arange(0, max_time, time_step)
 
         # Interpolate the amplitude data at the sampled time points
+        #https://www.geeksforgeeks.org/numpy-interp-function-python/
         sampled_amplitude = np.interp(sampled_time, self.x_data, self.signal_with_noise)
 
         self.samples_time = sampled_time
