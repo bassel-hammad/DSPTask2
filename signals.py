@@ -56,6 +56,7 @@ class signal():
         print("Max frequency fft: " + str(self.Max_frequency)) 
 
 
+
     def sample_signal(self,sample_freq=-1):
         #https://www.geeksforgeeks.org/numpy-interp-function-python/
         #i make sample_freq zero by dafult ,so the user dont need to send it , if he wants to sample by 2*Fmax
@@ -66,7 +67,7 @@ class signal():
         if(sample_freq==-1):
             self.fsampling=2*self.Max_frequency
         else:
-             self.fsampling=sample_freq*self.Max_frequency
+             self.fsampling=sample_freq
 
         if (self.fsampling == 0):
             # Generate x values
