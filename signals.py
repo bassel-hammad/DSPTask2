@@ -4,7 +4,7 @@ import pandas as pd
 class signal():
     def __init__(self):
         self.signal_with_noise=[]
-        self.MAX_SAMPLES = 1229
+        self.MAX_SAMPLES = 2000
         self.x_data = []
         self.y_data = []
         self.samples_time = []
@@ -14,7 +14,7 @@ class signal():
         self.reconstructed=[]
         self.difference_original_reconstructed=[]
     def upload_signal_data(self,x_data,y_data,max_freq=0):
-        self.MAX_SAMPLES =1229
+        self.MAX_SAMPLES =2000
         self.fsampling = 1.0
         self.Max_frequency= 0.0
         if(len(x_data)<self.MAX_SAMPLES ):
@@ -65,7 +65,7 @@ class signal():
         coefficient =2
 
         if(sample_freq==-1):
-            self.fsampling=2*self.Max_frequency
+            self.fsampling=2*self.Max_frequency+2
         else:
              self.fsampling=sample_freq
 
