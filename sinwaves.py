@@ -1,6 +1,6 @@
 from scipy import fft
 import numpy as np
-from main import *
+
 
 MAX_SAMPLES = 1000
 
