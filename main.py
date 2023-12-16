@@ -1,7 +1,6 @@
 import sys
 import os
 import csv
-from classes import *
 import pandas as pd
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog
