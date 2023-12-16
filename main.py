@@ -268,10 +268,10 @@ class Ui_MainWindow(object):
         self.my_siganl.upload_signal_data(signal_time, signal_magnitude,max_freq)
 
         self.FsampleSlider.setRange(0, int(10 * self.my_siganl.Max_frequency))
-        self.FsampleSlider.setValue(2*self.my_siganl.Max_frequency)
-        self.FsampleDisp.display(self.FsampleSlider.value())
-        self.FsampleSlider.setSingleStep(self.my_siganl.Max_frequency)
-        self.Max_freq_Display.display(self.my_siganl.Max_frequency)
+        self.FsampleSlider.setValue(2*int(self.my_siganl.Max_frequency))
+        self.FsampleDisp.display(int(self.FsampleSlider.value()))
+        self.FsampleSlider.setSingleStep(int(self.my_siganl.Max_frequency))
+        self.Max_freq_Display.display(int(self.my_siganl.Max_frequency))
         # Clear the previous plot
         self.my_siganl.sample_signal()
         self.draw_plots()
