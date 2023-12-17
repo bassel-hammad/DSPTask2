@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from signals import signal
 from sinwaves import sinwaves
+import wfdb
 
 
 class Ui_MainWindow(object):
@@ -254,24 +255,41 @@ class Ui_MainWindow(object):
 
     def open_csv_file(self):
         file_dialog = QFileDialog()
-        file_path, _ = file_dialog.getOpenFileName(self.MainWindow, 'Open CSV File', '', 'CSV Files (*.csv)')
+        file_dialog.setNameFilter('CSV Files (*.csv);;ECG Files (*.hea)')
+        file_path, _ = file_dialog.getOpenFileName(self.MainWindow, 'Open File')
+
         if file_path:
-            df = pd.read_csv(file_path)
+            # Check the file extension to determine the type
+            if file_path.endswith('.csv'):
+                df = pd.read_csv(file_path)
+                time = df.iloc[:, 0]
+                magnitude = df.iloc[:, 1]
+                Fmax = df.iloc[2, 2]
+                self.update_signal_data(time, magnitude, Fmax)
+            elif file_path.endswith('.hea'):
+                
+                # Read the record for ECG file
+                record = wfdb.rdrecord(file_path[:-4])
+                self.sample_rate = record.fs
+    
+                # Extract time-domain values
+                time_values = record.p_signal[:, 0]  # Assuming the first column represents time-domain values
+                
+                # Time domain coordinates
+                Ycoordinates = time_values
+                Xcoordinates = np.arange(len(Ycoordinates)) / record.fs
+                Fmax = record.fs/2
+                
+                self.update_signal_data(Xcoordinates, Ycoordinates, Fmax)
 
-            # Assuming your CSV file has two columns: time and magnitude
-            time = df.iloc[:, 0]
-            magnitude = df.iloc[:, 1]
-            # self.MySignal(time,magnitude)
-            self.update_signal_data(time,magnitude)
-
-    def update_signal_data(self,signal_time,signal_magnitude,max_freq=0):
+    def update_signal_data(self,signal_time,signal_magnitude,max_freq):
         self.my_siganl.upload_signal_data(signal_time, signal_magnitude,max_freq)
 
         self.FsampleSlider.setRange(0, int(10 * self.my_siganl.Max_frequency))
         self.FsampleSlider.setValue(2*int(self.my_siganl.Max_frequency))
-        self.FsampleDisp.display(int(self.FsampleSlider.value()))
+        self.FsampleDisp.display((self.FsampleSlider.value()))
         self.FsampleSlider.setSingleStep(int(self.my_siganl.Max_frequency))
-        self.Max_freq_Display.display(int(self.my_siganl.Max_frequency))
+        self.Max_freq_Display.display((self.my_siganl.Max_frequency))
         # Clear the previous plot
         self.my_siganl.sample_signal()
         self.draw_plots()
@@ -318,7 +336,6 @@ class Ui_MainWindow(object):
             print(f"Name: {sinwave.name}, Frequency: {sinwave._frequency}, Amplitude: {sinwave._amplitude}")
 
     def create_new_sinwave(self):
-
         self.frequency = 1.0
         self.amplitude = 1.0
 
@@ -387,11 +404,7 @@ class Ui_MainWindow(object):
         with open(filename, 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
             y = self.sum_sinwaves()
-            for sinwaves in self.sinwaves_lst:
-                if sinwaves.get_frequency() > self.max_frequency:
-                    self.max_frequency = sinwaves.get_frequency()
             writer.writerow(['x', 'y','Fmax'])
-
             for i in range(len(self.x)):
                 writer.writerow([self.x[i], y[i],self.max_frequency])
             
