@@ -88,11 +88,6 @@ class signal():
 
     def reconstruct_from_samples(self):
         self.reconstructed=np.array([])
-         #self.reconstructed = np.zeros_like(self.x_data)
-         #for i, ti in enumerate(self.x_data):
-            #self.reconstructed[i] = np.sum(self.samples_amplitude * np.sinc(2*self.Max_frequency* (ti - self.samples_time )))
-            #https://gist.github.com/endolith/1297227
-            #sinc_ = np.sinc((u - s[:, None]) / (s[1] - s[0]))
         sinc_ = np.sinc(((np.tile(self.x_data, (len(self.samples_time), 1))) - self.samples_time[:, None]) / (self.samples_time[1] - self.samples_time[0]))
         self.reconstructed= np.dot(self.samples_amplitude, sinc_)
 

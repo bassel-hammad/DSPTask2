@@ -387,10 +387,14 @@ class Ui_MainWindow(object):
         with open(filename, 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
             y = self.sum_sinwaves()
-            writer.writerow(['x', 'y'])
-            for i in range(len(self.x)):
-                writer.writerow([self.x[i], y[i]])
+            for sinwaves in self.sinwaves_lst:
+                if sinwaves.get_frequency() > self.max_frequency:
+                    self.max_frequency = sinwaves.get_frequency()
+            writer.writerow(['x', 'y','Fmax'])
 
+            for i in range(len(self.x)):
+                writer.writerow([self.x[i], y[i],self.max_frequency])
+            
         self.count += 1
 
     def plot_composer(self):
@@ -402,7 +406,6 @@ class Ui_MainWindow(object):
         ax.set_xlabel("Time")
         ax.set_ylabel("Amplitude")
         ax.grid(True)
-
 
         # Redraw the canvas
         self.canvas_added.draw()
@@ -421,7 +424,6 @@ class Ui_MainWindow(object):
         for sinwaves in self.sinwaves_lst:
             y_summed += sinwaves.Yaxis
         # RETURN Y_SUMMED TO PLOT IT
-
         return y_summed
     
     def RemoveSinwave(self):
