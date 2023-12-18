@@ -18,7 +18,7 @@ class Ui_MainWindow(object):
         self.MainWindow = None
         self.sinwaves_lst = []
         self.currentSinIndex = 0
-        self.x = np.linspace(0, 2 * np.pi, 1000)
+        self.x = np.linspace(0, 2 * np.pi, 10000)
         self.count = 1
         # Initialize default values for frequency and amplitude
         self.frequency = 1.0
@@ -320,7 +320,7 @@ class Ui_MainWindow(object):
         ax_difference = self.canvas_3.figure.add_subplot(1, 1, 1)
         ax_difference.set_xlabel("Time")
         ax_difference.set_ylabel("Magnitude")
-        ax_difference.set_title("ax_difference Signal")
+        ax_difference.set_title("difference Signal")
         ax_difference.grid(True)
         ax_difference.plot(self.my_siganl.x_data, self.my_siganl.difference_original_reconstructed, linewidth=3)
 
@@ -440,16 +440,11 @@ class Ui_MainWindow(object):
         return y_summed
     
     def RemoveSinwave(self):
-
         if(len(self.sinwaves_lst)!=0):
          index = self.sinComboBox.currentIndex()
          self.sinwaves_lst.pop(index)
         self.updateComboBox()
         self.sum_sinwaves()
-
-
-
-
 
     # add sinwaves names to comboBox
     def updateComboBox(self):
@@ -461,8 +456,6 @@ class Ui_MainWindow(object):
     def load_Composed(self):
         y = self.sum_sinwaves()
         self.update_signal_data(self.x,y,self.max_frequency)
-
-
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
